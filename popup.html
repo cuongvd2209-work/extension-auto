@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      width: 260px;
+      padding: 16px;
+      margin: 0;
+      background: #f5f7fb;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      border: 1px solid #d0d7de;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    button:hover {
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: scale(0.98);
+      box-shadow: none;
+    }
+  </style>
+</head>
+
+<body>
+  <input id="docId" placeholder="Enter Doc ID..." />
+  <button id="run">Run Auto Process</button>
+  <script src="popup.js"></script>
+</body>
+
+</html>
