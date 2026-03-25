@@ -63,12 +63,21 @@ function calcEndDate(startDate, addDate) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-function fillDate(element, date) {
-  element.focus();
-  element.value = convertDate(date);
-  element.dispatchEvent(new Event("input", { bubbles: true }));
-  element.dispatchEvent(new Event("change", { bubbles: true }));
-  element.blur();
+function blobToBase64(blob) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
+}
+
+function blobToFile(blob, fileName) {
+  const file = new File([blob], fileName, {
+    type: blob.type || 'application/octet-stream',
+    lastModified: Date.now(),
+  });
+
+  return file;
 }
 
 function getPaging() {
@@ -116,14 +125,6 @@ async function getDocIds(page) {
   });
 }
 
-function blobToBase64(blob) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.readAsDataURL(blob);
-  });
-}
-
 async function getBlobData(path, name, type) {
   if (!path.includes('upload/')) {
     path = Base64_Coder.encode(path);
@@ -148,10 +149,10 @@ async function getInformation(data) {
     new Toast('error', Url.decode_1252('Không lấy được danh sách file đính kèm, vui lòng thử lại'));
     return ''
   } else {
+    let fileName = '', file = '', base64 = '';
     try {
       let a = eval(data);
       let n = a.length;
-      let base64 = '', fileName = '';
       if (n > 0) {
         for (let i = 0; i < n; i++) {
           const f = a[i];
@@ -160,15 +161,21 @@ async function getInformation(data) {
             if (fileName.toLowerCase().endsWith(".pdf")) {
               const blob = await getBlobData(f.hdd_file, fileName, 'vb');
               base64 = await blobToBase64(blob);
+              file = blobToFile(blob, fileName);
+
               return {
+                success: true,
                 fileName,
+                file,
                 base64
               };
             }
           }
         }
         return {
+          success: false,
           fileName,
+          file,
           base64
         }
       } else {
@@ -177,11 +184,21 @@ async function getInformation(data) {
     } catch (e) {
       console.log(e.message);
       return {
+        success: true,
         fileName,
+        file,
         base64
       }
     }
   }
+}
+
+function fillDate(element, date) {
+  element.focus();
+  element.value = convertDate(date);
+  element.dispatchEvent(new Event("input", { bubbles: true }));
+  element.dispatchEvent(new Event("change", { bubbles: true }));
+  element.blur();
 }
 
 async function fillPriority(value) {
@@ -305,6 +322,26 @@ async function getAccessToken() {
   localStorage.setItem("EXTERNAL_ACCESS_TOKEN", data.data.access_token);
 }
 
+async function activeLog(action) {
+  const res = await fetch(`${baseApiUrl}/logs`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": localStorage.getItem("EXTERNAL_ACCESS_TOKEN")
+    },
+    body: JSON.stringify({
+      "type": "USER_ACTION",
+      "action": action
+    }),
+  });
+  const data = await res.json();
+
+  if (data.status_code == 401) {
+    await getAccessToken();
+    await logging(action);
+  }
+}
+
 async function getAllDocIds() {
   return await getDocIds(1);
   const paging = await getPaging();
@@ -361,6 +398,8 @@ async function checkProcess(jobId) {
 
   if (!data.data) {
     await sleep(10000);
+    console.log("Retry check process");
+
     return await checkProcess(jobId)
   }
 
@@ -370,9 +409,10 @@ async function checkProcess(jobId) {
 window.addEventListener("message", async (event) => {
   if (event.source !== window) return;
   if (event.data?.type === "RUN_OPEN_TAB") {
-    // localStorage.removeItem("ALL_DOC_IDS");
-    // localStorage.removeItem("EXTERNAL_ACCESS_TOKEN");
+    localStorage.removeItem("ALL_DOC_IDS");
+    localStorage.removeItem("EXTERNAL_ACCESS_TOKEN");
     await getAccessToken();
+    await activeLog("Start get document ids");
     const ids = await getAllDocIds()
     localStorage.setItem("ALL_DOC_IDS", JSON.stringify(ids));
     window.location.href = initURL.replace("::docId::", ids[0]);
@@ -384,22 +424,21 @@ window.addEventListener("message", async (event) => {
 
     NEORemoting.getRSet(apiUrl, async function (data) {
       const information = await getInformation(data);
-      if (information.base64 != '') {
-        // const jobId = await analyses(information.fileName, information.base64);
-        const jobId = '019d19b6-1486-7f5c-b66e-b3bec7ee8731';
+
+      if (information.success) {
+        const jobId = await analyses(information.fileName, information.base64);
         const data = await checkProcess(jobId);
         await fillPriority(data.priority)
         await fillDeadline(data.deadline)
         await fillDateToComplete(data.date_to_complete)
         await sleep(3000);
         await assignTask(data.tasks[0])
-
-        // const ids = JSON.parse(localStorage.getItem("ALL_DOC_IDS") || "[]");
-        // const currentIndex = ids.indexOf(docId);
-        // if (currentIndex >= 0 && currentIndex < ids.length - 1) {
-        //   const nextDocId = ids[currentIndex + 1];
-        //   window.location.href = initURL.replace("::docId::", nextDocId);
-        // }
+        const ids = JSON.parse(localStorage.getItem("ALL_DOC_IDS") || "[]");
+        const currentIndex = ids.indexOf(docId);
+        if (currentIndex >= 0 && currentIndex < ids.length - 1) {
+          const nextDocId = ids[currentIndex + 1];
+          window.location.href = initURL.replace("::docId::", nextDocId);
+        }
       } else {
         console.log("No data");
       }
