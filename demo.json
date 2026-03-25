@@ -1,0 +1,429 @@
+{
+    "title": "Phiếu Giao Nhiệm Vụ Triển Khai Công Tác",
+    "description": "Để đảm bảo tiến độ, chất lượng công tác tham mưu UBND Thành phố và triển khai thực hiện các nhiệm vụ đã được phân công theo chỉ đạo của Giám đốc Sở Xây dựng.",
+    "priority": 1,
+    "date_to_complete": 4,
+    "deadline": "2026-03-20",
+    "tasks": [
+        {
+            "title": "Báo cáo phương án phát triển hạ tầng giao thông xanh và chính sách liên quan",
+            "description": "Bao gồm báo cáo về hạ tầng trạm sạc, tủ đổi pin; nghiên cứu Quy hoạch Thủ đô về giao thông năng lượng sạch; đề xuất chính sách vào Luật Thủ đô; và xây dựng Quyết định hỗ trợ lãi vay cho xe buýt điện. Hạn Quý I/2026.",
+            "date_to_complete": 15,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a2ef6-98d5-7eeb-b4c6-f6511c016bfd",
+                    "full_name": "Lương Đức Thắng",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7359-b6be-ee936b2daec9",
+                    "full_name": "Đỗ Tuấn Anh",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7d55-b922-b17d29db14bf",
+                    "full_name": "Hoàng Anh Tú",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        },
+        {
+            "title": "Báo cáo thí điểm màn hình LED và Đề án cho thuê lòng đường",
+            "description": "Báo cáo kết quả thí điểm chỉnh trang, duy tu hệ thống màn hình LED phục vụ tuyên truyền và quảng cáo; Báo cáo nghiên cứu, tham mưu triển khai “Đề án cho thuê lòng đường, vỉa hè để kinh doanh”. Hạn Quý I/2026.",
+            "date_to_complete": 15,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a2ef6-98d5-7eeb-b4c6-f6511c016bfd",
+                    "full_name": "Lương Đức Thắng",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7012-ad43-ce4770738fd9",
+                    "full_name": "Đỗ Hữu Đông",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7d55-b922-b17d29db14bf",
+                    "full_name": "Hoàng Anh Tú",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        },
+        {
+            "title": "Xây dựng phương án vận tải công cộng và giao thông xanh",
+            "description": "Bao gồm phương án luồng tuyến xe buýt cho khu vực hạ tầng nhỏ hẹp (hạn Q1/2026), Đề án hạn chế phương tiện cá nhân và chuyển sang giao thông xanh (trình T7/2026), và tổng hợp đề xuất về xe đạp công cộng.",
+            "date_to_complete": 137,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a2ef6-98d5-7eeb-b4c6-f6511c016bfd",
+                    "full_name": "Lương Đức Thắng",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7359-b6be-ee936b2daec9",
+                    "full_name": "Đỗ Tuấn Anh",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        },
+        {
+            "title": "Tổng hợp kết quả khảo sát lắp đặt tủ đổi pin",
+            "description": "Báo cáo, tổng hợp kết quả khảo sát lắp đặt tủ đổi pin, dự kiến khối lượng, phân loại theo vị trí và không gian địa lý, kèm công suất phục vụ.",
+            "date_to_complete": 4,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a3b15-03e1-7622-b181-99a1350763a5",
+                    "full_name": "Phạm Huy Khang",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7d55-b922-b17d29db14bf",
+                    "full_name": "Hoàng Anh Tú",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        },
+        {
+            "title": "Báo cáo phương án tổ chức giao thông vùng phát thải thấp và đề xuất vị trí trạm rửa xe",
+            "description": "Đề xuất danh sách vị trí xây trạm rửa xe cửa ngõ; xác định phương án thí điểm vùng phát thải thấp Vành đai 1; phương án tổ chức giao thông, bãi xe cho khu vực thí điểm.",
+            "date_to_complete": 4,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a2ef6-98d5-7eeb-b4c6-f6511c016bfd",
+                    "full_name": "Lương Đức Thắng",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-704c-96f8-36497c8176e1",
+                    "full_name": "Lê Trọng Thuân",
+                    "main": false,
+                    "coordination": true,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7fe1-bb1d-658bedfb95f2",
+                    "full_name": "Nguyễn Thị Trà My",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        },
+        {
+            "title": "Báo cáo tổng thể nhiệm vụ quản lý không gian ngầm, cây xanh, chiếu sáng",
+            "description": "Báo cáo tổng thể tình hình triển khai nhiệm vụ của Phòng; tham mưu Đề án xây dựng hào kỹ thuật; và báo cáo kết quả thực hiện các thông báo liên quan đến cây xanh, công viên, mặt nước.",
+            "date_to_complete": 4,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a3b15-03e1-7622-b181-99a1350763a5",
+                    "full_name": "Phạm Huy Khang",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a2ef6-98d5-7eeb-b4c6-f6511c016bfd",
+                    "full_name": "Lương Đức Thắng",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7484-afed-144f02b4a6ff",
+                    "full_name": "Đặng Quyết Thắng",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        },
+        {
+            "title": "Báo cáo tổng hợp tiến độ chuẩn bị khởi công các dự án",
+            "description": "Tổng hợp, báo cáo các nội dung liên quan đến chức năng, nhiệm vụ của Sở trong quá trình chuẩn bị khởi công các dự án theo Thông báo số 172/TB-VP.",
+            "date_to_complete": 4,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a3b15-03e1-7622-b181-99a1350763a5",
+                    "full_name": "Phạm Huy Khang",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a2ef6-98d5-7eeb-b4c6-f6511c016bfd",
+                    "full_name": "Lương Đức Thắng",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7484-afed-144f02b4a6ff",
+                    "full_name": "Đặng Quyết Thắng",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        },
+        {
+            "title": "Báo cáo tiến độ và tham mưu xử lý vướng mắc các dự án cấp thoát nước",
+            "description": "Trên cơ sở báo cáo của Trung tâm QLHTKT, chủ động phân tích, đánh giá tiến độ, tham mưu văn bản đôn đốc và đề xuất phương án xử lý vướng mắc.",
+            "date_to_complete": 4,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a3b15-03e1-7622-b181-99a1350763a5",
+                    "full_name": "Phạm Huy Khang",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a2ef6-98d5-7eeb-b4c6-f6511c016bfd",
+                    "full_name": "Lương Đức Thắng",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7c24-9d06-bd36cfa1149a",
+                    "full_name": "Lê Anh Quân",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        },
+        {
+            "title": "Đôn đốc và báo cáo tiến độ dự án hồ công viên Hà Đông",
+            "description": "Đôn đốc Ban Quản lý dự án ĐTXD công trình hạ tầng kỹ thuật và nông nghiệp báo cáo tiến độ triển khai hạng mục hồ công viên Hà Đông. Tổng hợp, báo cáo lãnh đạo Sở kết quả thực hiện.",
+            "date_to_complete": 2,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a2ef6-98d5-7eeb-b4c6-f6511c016bfd",
+                    "full_name": "Lương Đức Thắng",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7d55-b922-b17d29db14bf",
+                    "full_name": "Hoàng Anh Tú",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7e5b-86f2-ff3db367123b",
+                    "full_name": "Nguyễn Hữu Sinh",
+                    "main": false,
+                    "coordination": true,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        },
+        {
+            "title": "Báo cáo chuyên đề vận hành và phát triển xe buýt",
+            "description": "Bao gồm đánh giá khả năng chuyển đổi xe buýt điện, kết quả thực hiện QĐ 5241/QĐ-UBND, hiệu quả khai thác năm 2025, và đề xuất điều chỉnh định mức kinh tế kỹ thuật.",
+            "date_to_complete": 4,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a2ef6-98d5-7eeb-b4c6-f6511c016bfd",
+                    "full_name": "Lương Đức Thắng",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7359-b6be-ee936b2daec9",
+                    "full_name": "Đỗ Tuấn Anh",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        },
+        {
+            "title": "Triển khai các giải pháp giao thông thông minh",
+            "description": "Báo cáo chi tiết về hệ thống thẻ vé liên thông đa phương thức; Báo cáo tiến độ và kết quả xây dựng phương án xe buýt điện trong khu vực thí điểm vùng phát thải thấp.",
+            "date_to_complete": 4,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a2ef6-98d5-7eeb-b4c6-f6511c016bfd",
+                    "full_name": "Lương Đức Thắng",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7d55-b922-b17d29db14bf",
+                    "full_name": "Hoàng Anh Tú",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7fe1-bb1d-658bedfb95f2",
+                    "full_name": "Nguyễn Thị Trà My",
+                    "main": false,
+                    "coordination": true,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        },
+        {
+            "title": "Thực hiện chế độ báo cáo tiến độ dự án thoát nước khẩn cấp",
+            "description": "Báo cáo kết quả thực hiện hàng ngày, cập nhật trước 9h00 sáng ngày hôm sau, đối với toàn bộ các hạng mục thuộc 03 dự án do Trung tâm làm Chủ đầu tư.",
+            "date_to_complete": 4,
+            "department": {
+                "main": true,
+                "coordination": false,
+                "monitor": false,
+                "start_date": "2026-03-16"
+            },
+            "users": [
+                {
+                    "user_id": "019a3b15-03e1-7622-b181-99a1350763a5",
+                    "full_name": "Phạm Huy Khang",
+                    "main": false,
+                    "coordination": false,
+                    "monitor": true,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7c24-9d06-bd36cfa1149a",
+                    "full_name": "Lê Anh Quân",
+                    "main": true,
+                    "coordination": false,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                },
+                {
+                    "user_id": "019a237b-c4d5-7c6d-9e78-63c69dc28513",
+                    "full_name": "Vũ Đức Hạnh",
+                    "main": false,
+                    "coordination": true,
+                    "monitor": false,
+                    "start_date": "2026-03-16"
+                }
+            ]
+        }
+    ]
+}
