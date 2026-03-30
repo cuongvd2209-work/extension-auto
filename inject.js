@@ -1,5 +1,5 @@
 const initURL = `https://quanlyvanban.hanoi.gov.vn/qlvbdh/main?IzL1Dx9w5BxmCEtw5A9c6Bnb=CEt1CzAwJyHx4yjbTq9vCBtuTt9fCcPbUo..&IyLlCc5f5w5fCES.=DBnZTb9jTBnw6Q9d6Btl3z5f5BKl6B1a53W.&CyHg5BLw=::docId::&Do..=1&CyHg5BLwObPt=undefined&CBAkTA9f5o..=m2526`
-const baseApiUrl = `https://qlvb-dev.pthub.vn/api`;
+const baseApiUrl = `https://qlvb-dev-api.pthub.vn/api`;
 const pageSize = 1;
 const filter = {
   "ma_dinh_danh": "",
@@ -61,14 +61,6 @@ function calcEndDate(startDate, addDate) {
   const dd = String(d.getDate()).padStart(2, "0");
 
   return `${yyyy}-${mm}-${dd}`;
-}
-
-function blobToBase64(blob) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.readAsDataURL(blob);
-  });
 }
 
 function blobToFile(blob, fileName) {
@@ -149,7 +141,7 @@ async function getInformation(data) {
     new Toast('error', Url.decode_1252('Không lấy được danh sách file đính kèm, vui lòng thử lại'));
     return ''
   } else {
-    let fileName = '', file = '', base64 = '';
+    let fileName = '', file = '';
     try {
       let a = eval(data);
       let n = a.length;
@@ -160,34 +152,26 @@ async function getInformation(data) {
             fileName = f.name;
             if (fileName.toLowerCase().endsWith(".pdf")) {
               const blob = await getBlobData(f.hdd_file, fileName, 'vb');
-              base64 = await blobToBase64(blob);
               file = blobToFile(blob, fileName);
 
               return {
                 success: true,
-                fileName,
-                file,
-                base64
+                file
               };
             }
           }
         }
         return {
           success: false,
-          fileName,
-          file,
-          base64
+          file
         }
       } else {
         new Toast('error', Url.decode_1252('Không có file đính kèm'));
       }
     } catch (e) {
-      console.log(e.message);
       return {
         success: true,
-        fileName,
-        file,
-        base64
+        file
       }
     }
   }
@@ -313,10 +297,7 @@ async function getAccessToken() {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      "password": "xxxxx",
-      "username_or_email": "xxxxxx"
-    }),
+    body: JSON.stringify({}),
   });
   const data = await res.json();
   localStorage.setItem("EXTERNAL_ACCESS_TOKEN", data.data.access_token);
@@ -359,23 +340,22 @@ async function getAllDocIds() {
   return ids;
 }
 
-async function analyses(fileName, base64) {
-  const res = await fetch(`${baseApiUrl}/analyses-async`, {
+async function analyses(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${baseApiUrl}/analyses-multipart/async`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
       "Authorization": localStorage.getItem("EXTERNAL_ACCESS_TOKEN")
     },
-    body: JSON.stringify({
-      "file_name": fileName,
-      "content_base64": base64
-    }),
+    body: formData,
   });
   const data = await res.json();
 
   if (data.status_code == 401) {
     await getAccessToken();
-    return await analyses(fileName, base64);
+    return await analyses(file);
   }
 
   return data.job_id;
@@ -396,6 +376,13 @@ async function checkProcess(jobId) {
     return await checkProcess(jobId)
   }
 
+  if (data.error) {
+    return {
+      success: false,
+      error: data.error
+    }
+  }
+
   if (!data.data) {
     await sleep(10000);
     console.log("Retry check process");
@@ -403,7 +390,10 @@ async function checkProcess(jobId) {
     return await checkProcess(jobId)
   }
 
-  return data.data;
+  return {
+    success: true,
+    data: data.data
+  };
 }
 
 window.addEventListener("message", async (event) => {
@@ -412,7 +402,7 @@ window.addEventListener("message", async (event) => {
     localStorage.removeItem("ALL_DOC_IDS");
     localStorage.removeItem("EXTERNAL_ACCESS_TOKEN");
     await getAccessToken();
-    await activeLog("Start get document ids");
+    // await activeLog("Start get document ids");
     const ids = await getAllDocIds()
     localStorage.setItem("ALL_DOC_IDS", JSON.stringify(ids));
     window.location.href = initURL.replace("::docId::", ids[0]);
@@ -424,15 +414,18 @@ window.addEventListener("message", async (event) => {
 
     NEORemoting.getRSet(apiUrl, async function (data) {
       const information = await getInformation(data);
-
       if (information.success) {
-        const jobId = await analyses(information.fileName, information.base64);
-        const data = await checkProcess(jobId);
-        await fillPriority(data.priority)
-        await fillDeadline(data.deadline)
-        await fillDateToComplete(data.date_to_complete)
-        await sleep(3000);
-        await assignTask(data.tasks[0])
+        const jobId = await analyses(information.file);
+        const process = await checkProcess(jobId);
+        if (process.success) {
+          const data = process.data;
+          await fillPriority(data.priority)
+          await fillDeadline(data.deadline)
+          await fillDateToComplete(data.date_to_complete)
+          await sleep(3000);
+          await assignTask(data.tasks[0])
+        }
+
         const ids = JSON.parse(localStorage.getItem("ALL_DOC_IDS") || "[]");
         const currentIndex = ids.indexOf(docId);
         if (currentIndex >= 0 && currentIndex < ids.length - 1) {
