@@ -28,7 +28,7 @@ chrome.runtime.onMessage.addListener((msg) => {
   console.log(msg.type);
   if (msg.type === "RUN_AUTO_PROCESS") {
     window.postMessage(
-      { type: "RUN_OPEN_TAB" },
+      { type: "RUN_OPEN_TAB", docId: msg.docId },
       "*"
     );
   }

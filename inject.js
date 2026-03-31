@@ -253,11 +253,11 @@ async function fillDescription(text) {
   if (hidden) hidden.value = text;
 }
 
-async function fillUserTask(rows, users, dateToComplete) {
+async function fillUserTask(rows, task) {
   const userNameEl = rows.querySelector('td');
 
-  for (let index = 0; index < users.length; index++) {
-    const user = users[index];
+  for (let index = 0; index < task.users.length; index++) {
+    const user = task.users[index];
     if (user.full_name == userNameEl.innerText) {
       const checkedClassName = user.main ? 'xlc' : (user.coordination ? 'ph' : 'td');
       rows.querySelector(`input.${checkedClassName}`).click();
@@ -265,8 +265,17 @@ async function fillUserTask(rows, users, dateToComplete) {
         const ngayBatDauCV = rows.querySelector('input.ngayBatDauCV');
         fillDate(ngayBatDauCV, user.start_date)
         const ngayKetThucCV = rows.querySelector('input.ngayKetThucCV');
-        fillDate(ngayKetThucCV, calcEndDate(user.start_date, dateToComplete))
+        fillDate(ngayKetThucCV, calcEndDate(user.start_date, task.date_to_complete))
       }
+
+      await activeLog({
+        action: "ASSIGN TASK",
+        assign: user.full_name,
+        pdf_name: task.title,
+        response: "Task assigned successfully",
+        task: `Start date: ${user.start_date}, End date: ${calcEndDate(user.start_date, task.date_to_complete)}`,
+        type: "INFO"
+      });
     }
   }
 }
@@ -286,7 +295,7 @@ async function assignTask(task) {
   for (let i = index + 1; i < rows.length; i++) {
     const el = rows[i];
     if (el.classList.contains("trEmp")) {
-      await fillUserTask(el, task.users, task.date_to_complete);
+      await fillUserTask(el, task);
     }
   }
 }
@@ -303,23 +312,20 @@ async function getAccessToken() {
   localStorage.setItem("EXTERNAL_ACCESS_TOKEN", data.data.access_token);
 }
 
-async function activeLog(action) {
+async function activeLog(logAction) {
   const res = await fetch(`${baseApiUrl}/logs`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": localStorage.getItem("EXTERNAL_ACCESS_TOKEN")
     },
-    body: JSON.stringify({
-      "type": "USER_ACTION",
-      "action": action
-    }),
+    body: JSON.stringify(logAction),
   });
   const data = await res.json();
 
   if (data.status_code == 401) {
     await getAccessToken();
-    await logging(action);
+    await activeLog(logAction);
   }
 }
 
@@ -384,7 +390,7 @@ async function checkProcess(jobId) {
   }
 
   if (!data.data) {
-    await sleep(10000);
+    await sleep(20000);
     console.log("Retry check process");
 
     return await checkProcess(jobId)
@@ -402,8 +408,18 @@ window.addEventListener("message", async (event) => {
     localStorage.removeItem("ALL_DOC_IDS");
     localStorage.removeItem("EXTERNAL_ACCESS_TOKEN");
     await getAccessToken();
-    // await activeLog("Start get document ids");
-    const ids = await getAllDocIds()
+    await activeLog({
+      action: "GET DOCUMENT TO PROCESS",
+      assign: "N/A",
+      pdf_name: "N/A",
+      response: "N/A",
+      task: "N/A",
+      type: "INFO"
+    });
+
+    const docId = event.data.docId;
+    const ids = docId ? [docId] : await getAllDocIds();
+
     localStorage.setItem("ALL_DOC_IDS", JSON.stringify(ids));
     window.location.href = initURL.replace("::docId::", ids[0]);
   }
