@@ -1,4 +1,4 @@
-const initURL = `https://quanlyvanban.hanoi.gov.vn/qlvbdh/main?IzL1Dx9w5BxmCEtw5A9c6Bnb=CEt1CzAwJyHx4yjbTq9vCBtuTt9fCcPbUo..&IyLlCc5f5w5fCES.=DBnZTb9jTBnw6Q9d6Btl3z5f5BKl6B1a53W.&CyHg5BLw=::docId::&Do..=1&CyHg5BLwObPt=undefined&CBAkTA9f5o..=m2526`
+const assignTaskURL = `https://quanlyvanban.hanoi.gov.vn/qlvbdh/main?externalType=ASSIGN_TASK&IzL1Dx9w5BxmCEtw5A9c6Bnb=CEt1CzAwJyHx4yjbTq9vCBtuTt9fCcPbUo..&IyLlCc5f5w5fCES.=DBnZTb9jTBnw6Q9d6Btl3z5f5BKl6B1a53W.&CyHg5BLw=::docId::&Do..=1&CyHg5BLwObPt=undefined&CBAkTA9f5o..=m2526`
 const baseApiUrl = `https://qlvb-dev-api.pthub.vn/api`;
 const pageSize = 1;
 const filter = {
@@ -40,6 +40,7 @@ const filter = {
   "para_tooltip": "0"
 }
 
+// COMMON FUNCTION START
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -184,7 +185,9 @@ function fillDate(element, date) {
   element.dispatchEvent(new Event("change", { bubbles: true }));
   element.blur();
 }
+// COMMON FUNCTION END
 
+// ASSIGN_TASK START
 async function fillPriority(value) {
   const select = document.getElementById("cbPriority");
 
@@ -299,7 +302,9 @@ async function assignTask(task) {
     }
   }
 }
+// ASSIGN_TASK END
 
+// CALL API FUNCTION START
 async function getAccessToken() {
   const res = await fetch(`${baseApiUrl}/v1/auth/login`, {
     method: "POST",
@@ -401,6 +406,13 @@ async function checkProcess(jobId) {
     data: data.data
   };
 }
+// CALL API FUNCTION END
+
+// GOTO PAGE START
+function gotoAssignTaskPage(docId) {
+  window.location.href = assignTaskURL.replace("::docId::", docId);
+}
+// GOTO PAGE END
 
 window.addEventListener("message", async (event) => {
   if (event.source !== window) return;
@@ -421,10 +433,10 @@ window.addEventListener("message", async (event) => {
     const ids = docId ? [docId] : await getAllDocIds();
 
     localStorage.setItem("ALL_DOC_IDS", JSON.stringify(ids));
-    window.location.href = initURL.replace("::docId::", ids[0]);
+    gotoAssignTaskPage(ids[0]);
   }
 
-  if (event.data?.type === "FILL_FORM") {
+  if (event.data?.type === "ASSIGN_TASK") {
     const docId = event.data.docId;
     const apiUrl = `qlvb.van_ban_den.getFileAttachLst("${docId}",0)`;
 
@@ -446,7 +458,7 @@ window.addEventListener("message", async (event) => {
         const currentIndex = ids.indexOf(docId);
         if (currentIndex >= 0 && currentIndex < ids.length - 1) {
           const nextDocId = ids[currentIndex + 1];
-          window.location.href = initURL.replace("::docId::", nextDocId);
+          gotoAssignTaskPage(nextDocId);
         }
       } else {
         console.log("No data");

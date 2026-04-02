@@ -4,17 +4,23 @@ s.onload = () => s.remove();
 document.documentElement.appendChild(s);
 
 const observer = new MutationObserver(() => {
-  const el = document.getElementById("txtNoiDung");
-  if (el) {
-    const params = new URLSearchParams(window.location.search);
-    const key = params.get("CyHg5BLw");
-    setTimeout(() => {
-      window.postMessage(
-        { type: "FILL_FORM", docId: key },
-        "*"
-      );
-    }, 1000);
-    observer.disconnect();
+  const params = new URLSearchParams(window.location.search);
+  const externalType = params.get('externalType');
+
+  // GOTO ASSIGN PAGE
+  if (externalType == 'ASSIGN_TASK') {
+    const el = document.getElementById("txtNoiDung");
+    if (el) {
+      const params = new URLSearchParams(window.location.search);
+      const key = params.get("CyHg5BLw");
+      setTimeout(() => {
+        window.postMessage(
+          { type: "ASSIGN_TASK", docId: key },
+          "*"
+        );
+      }, 1000);
+      observer.disconnect();
+    }
   }
 });
 
