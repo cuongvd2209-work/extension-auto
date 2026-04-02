@@ -1,4 +1,5 @@
 const assignTaskURL = `https://quanlyvanban.hanoi.gov.vn/qlvbdh/main?externalType=ASSIGN_TASK&IzL1Dx9w5BxmCEtw5A9c6Bnb=CEt1CzAwJyHx4yjbTq9vCBtuTt9fCcPbUo..&IyLlCc5f5w5fCES.=DBnZTb9jTBnw6Q9d6Btl3z5f5BKl6B1a53W.&CyHg5BLw=::docId::&Do..=1&CyHg5BLwObPt=undefined&CBAkTA9f5o..=m2526`
+const transferProcessingURL = `https://quanlyvanban.hanoi.gov.vn/qlvbdh/main?externalType=TRANSFER_PROCESSING&externalDocId=::docId::&IzL1Dx9w5BxmCEtw5A9c6Bnb=CEt1CzAwJyHx4yjbTq9vCBtuTt9fCcPbUo..&IyLlCc5f5w5fCES.=DBny4Y9y4B1V4ctk3yPbCY9aDz5Y3yPbCY9fCcPbUo..&CBAkTA9f5o..=m2766&4c9lTFLwDctm=2&6yXl=VAN_BAN_DEN_CA_NHAN&Cc9m=20&TFbm5B5xCcLw6B9k=0`
 const baseApiUrl = `https://qlvb-dev-api.pthub.vn/api`;
 const pageSize = 1;
 const filter = {
@@ -184,6 +185,26 @@ function fillDate(element, date) {
   element.dispatchEvent(new Event("input", { bubbles: true }));
   element.dispatchEvent(new Event("change", { bubbles: true }));
   element.blur();
+}
+
+function getData(apiUrl) {
+  return new Promise((resolve, reject) => {
+    NEORemoting.getRSet(apiUrl, async function (res) {
+      try {
+        const information = await getInformation(res);
+
+        if (information.success) {
+          const jobId = await analyses(information.file);
+          const data = await checkProcess(jobId);
+          resolve(data);
+        } else {
+          resolve([]);
+        }
+      } catch (err) {
+        reject(err);
+      }
+    });
+  });
 }
 // COMMON FUNCTION END
 
@@ -388,10 +409,7 @@ async function checkProcess(jobId) {
   }
 
   if (data.error) {
-    return {
-      success: false,
-      error: data.error
-    }
+    return [];
   }
 
   if (!data.data) {
@@ -401,10 +419,7 @@ async function checkProcess(jobId) {
     return await checkProcess(jobId)
   }
 
-  return {
-    success: true,
-    data: data.data
-  };
+  return data.data;
 }
 // CALL API FUNCTION END
 
@@ -412,11 +427,15 @@ async function checkProcess(jobId) {
 function gotoAssignTaskPage(docId) {
   window.location.href = assignTaskURL.replace("::docId::", docId);
 }
+
+function gotoTransferProcessingPage(docId) {
+  window.location.href = transferProcessingURL.replace("::docId::", docId);
+}
 // GOTO PAGE END
 
-window.addEventListener("message", async (event) => {
-  if (event.source !== window) return;
-  if (event.data?.type === "RUN_OPEN_TAB") {
+window.addEventListener("message", async (externalEvent) => {
+  if (externalEvent.source !== window) return;
+  if (externalEvent.data?.type === "RUN_OPEN_TAB") {
     localStorage.removeItem("ALL_DOC_IDS");
     localStorage.removeItem("EXTERNAL_ACCESS_TOKEN");
     await getAccessToken();
@@ -429,40 +448,42 @@ window.addEventListener("message", async (event) => {
       type: "INFO"
     });
 
-    const docId = event.data.docId;
+    const docId = externalEvent.data.docId;
     const ids = docId ? [docId] : await getAllDocIds();
 
     localStorage.setItem("ALL_DOC_IDS", JSON.stringify(ids));
-    gotoAssignTaskPage(ids[0]);
+    // gotoAssignTaskPage(ids[0]);
+    gotoTransferProcessingPage(ids[0])
   }
 
-  if (event.data?.type === "ASSIGN_TASK") {
-    const docId = event.data.docId;
+  if (externalEvent.data?.action === "AUTO_FILL") {
+    const docId = externalEvent.data.docId;
+    const type = externalEvent.data.type;
     const apiUrl = `qlvb.van_ban_den.getFileAttachLst("${docId}",0)`;
+    const data = await getData(apiUrl);
 
-    NEORemoting.getRSet(apiUrl, async function (data) {
-      const information = await getInformation(data);
-      if (information.success) {
-        const jobId = await analyses(information.file);
-        const process = await checkProcess(jobId);
-        if (process.success) {
-          const data = process.data;
-          await fillPriority(data.priority)
-          await fillDeadline(data.deadline)
-          await fillDateToComplete(data.date_to_complete)
-          await sleep(3000);
-          await assignTask(data.tasks[0])
-        }
-
-        const ids = JSON.parse(localStorage.getItem("ALL_DOC_IDS") || "[]");
-        const currentIndex = ids.indexOf(docId);
-        if (currentIndex >= 0 && currentIndex < ids.length - 1) {
-          const nextDocId = ids[currentIndex + 1];
-          gotoAssignTaskPage(nextDocId);
-        }
-      } else {
-        console.log("No data");
+    if (type === "ASSIGN_TASK") {
+      await fillPriority(data.priority)
+      await fillDeadline(data.deadline)
+      await fillDateToComplete(data.date_to_complete)
+      await sleep(3000);
+      await assignTask(data.tasks[0]);
+      const ids = JSON.parse(localStorage.getItem("ALL_DOC_IDS") || "[]");
+      const currentIndex = ids.indexOf(docId);
+      if (currentIndex >= 0 && currentIndex < ids.length - 1) {
+        const nextDocId = ids[currentIndex + 1];
+        gotoAssignTaskPage(nextDocId);
       }
-    });
+    }
+
+    if (type === "TRANSFER_PROCESSING") {
+      const el = document.createElement('div');
+      el.onclick = (e) => showDocDetail(docId, 'FALSE', '514357466', e);
+      el.click();
+      await sleep(3000);
+      chuyenTiepVanBanV2(1);
+      await sleep(3000);
+      console.log(data);
+    }
   }
 });

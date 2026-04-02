@@ -11,11 +11,30 @@ const observer = new MutationObserver(() => {
   if (externalType == 'ASSIGN_TASK') {
     const el = document.getElementById("txtNoiDung");
     if (el) {
-      const params = new URLSearchParams(window.location.search);
-      const key = params.get("CyHg5BLw");
       setTimeout(() => {
         window.postMessage(
-          { type: "ASSIGN_TASK", docId: key },
+          { 
+            type: "ASSIGN_TASK", 
+            docId: params.get("CyHg5BLw"),
+            action: "AUTO_FILL"
+          },
+          "*"
+        );
+      }, 1000);
+      observer.disconnect();
+    }
+  }
+
+  if (externalType == 'TRANSFER_PROCESSING') {
+    const el = document.getElementById("dt_basic");
+    if (el) {
+      setTimeout(() => {
+        window.postMessage(
+          { 
+            type: "TRANSFER_PROCESSING",
+            docId: params.get("externalDocId"),
+            action: "AUTO_FILL"
+          },
           "*"
         );
       }, 1000);
