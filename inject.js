@@ -1,7 +1,18 @@
-const assignTaskURL = `https://quanlyvanban.hanoi.gov.vn/qlvbdh/main?externalType=ASSIGN_TASK&IzL1Dx9w5BxmCEtw5A9c6Bnb=CEt1CzAwJyHx4yjbTq9vCBtuTt9fCcPbUo..&IyLlCc5f5w5fCES.=DBnZTb9jTBnw6Q9d6Btl3z5f5BKl6B1a53W.&CyHg5BLw=::docId::&Do..=1&CyHg5BLwObPt=undefined&CBAkTA9f5o..=m2526`
-const transferProcessingURL = `https://quanlyvanban.hanoi.gov.vn/qlvbdh/main?externalType=TRANSFER_PROCESSING&externalDocId=::docId::&IzL1Dx9w5BxmCEtw5A9c6Bnb=CEt1CzAwJyHx4yjbTq9vCBtuTt9fCcPbUo..&IyLlCc5f5w5fCES.=DBny4Y9y4B1V4ctk3yPbCY9aDz5Y3yPbCY9fCcPbUo..&CBAkTA9f5o..=m2766&4c9lTFLwDctm=2&6yXl=VAN_BAN_DEN_CA_NHAN&Cc9m=20&TFbm5B5xCcLw6B9k=0`
+let externalType = 'TRANSFER_PROCESSING';
 const baseApiUrl = `https://qlvb-dev-api.pthub.vn/api`;
 const pageSize = 1;
+const enviroiment = {
+  ASSIGN_TASK: {
+    internalUrl: `https://quanlyvanban.hanoi.gov.vn/qlvbdh/main?externalType=ASSIGN_TASK&IzL1Dx9w5BxmCEtw5A9c6Bnb=CEt1CzAwJyHx4yjbTq9vCBtuTt9fCcPbUo..&IyLlCc5f5w5fCES.=DBnZTb9jTBnw6Q9d6Btl3z5f5BKl6B1a53W.&CyHg5BLw=::docId::&Do..=1&CyHg5BLwObPt=undefined&CBAkTA9f5o..=m2526`,
+    postAnalysesApi: `${baseApiUrl}/analyses-multipart/async`,
+    getAnalysesApi: `${baseApiUrl}/analyses-async`
+  },
+  TRANSFER_PROCESSING: {
+    internalUrl: `https://quanlyvanban.hanoi.gov.vn/qlvbdh/main?externalType=TRANSFER_PROCESSING&externalDocId=::docId::&IzL1Dx9w5BxmCEtw5A9c6Bnb=CEt1CzAwJyHx4yjbTq9vCBtuTt9fCcPbUo..&IyLlCc5f5w5fCES.=DBny4Y9y4B1V4ctk3yPbCY9aDz5Y3yPbCY9fCcPbUo..&CBAkTA9f5o..=m2766&4c9lTFLwDctm=2&6yXl=VAN_BAN_DEN_CA_NHAN&Cc9m=20&TFbm5B5xCcLw6B9k=0`,
+    postAnalysesApi: `${baseApiUrl}/analyses-multipart-lead/async`,
+    getAnalysesApi: `${baseApiUrl}/analyses-lead-async`
+  }
+}
 const filter = {
   "ma_dinh_danh": "",
   "trich_yeu": "",
@@ -52,6 +63,16 @@ function convertDate(date) {
     }/${d.getFullYear()}`;
 
   return formatted;
+}
+
+function toSlug(str) {
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'd')
+    .replace(/\s+/g, '')
+    .toLowerCase();
 }
 
 function calcEndDate(startDate, addDate) {
@@ -325,6 +346,54 @@ async function assignTask(task) {
 }
 // ASSIGN_TASK END
 
+// TRANSFER_PROCESSING START
+async function fillTextArea(elementId, value) {
+  const element = document.getElementById(elementId);
+
+  if (!element) {
+    console.log("Chưa thấy input txtThamMuu");
+    return;
+  }
+
+  element.value = value;
+  element.dispatchEvent(new Event("input", { bubbles: true }));
+  element.dispatchEvent(new Event("change", { bubbles: true }));
+}
+
+async function fillAutoAssign(value) {
+  if (value) {
+    const element = document.getElementById('chk_tudong_giaoviec');
+
+    if (!element) {
+      console.log("Chưa thấy input chk_tudong_giaoviec");
+      return;
+    }
+
+    element.click();
+  }
+}
+
+async function fillUserProcessing(users) {
+  const table = document.getElementById('dt_ds_chuyentiep');
+  if (!table) return;
+
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    const className = `treegrid-${toSlug(user.full_name)}_soxaydung`;
+    const element = table.querySelector(`tr.${className}`);
+    if (user.is_main_processor) {
+      element.querySelector(`td.chutri`).click();
+    }
+    if (user.coordination_user) {
+      element.querySelector(`td.userxl`).click();
+    }
+    if (user.view_user) {
+      element.querySelector(`td.userxem`).click();
+    }
+  }
+}
+// TRANSFER_PROCESSING END
+
 // CALL API FUNCTION START
 async function getAccessToken() {
   const res = await fetch(`${baseApiUrl}/v1/auth/login`, {
@@ -332,7 +401,7 @@ async function getAccessToken() {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({}),
+    body: JSON.stringify({"username_or_email":"lehuuhong","password":"admin123"}),
   });
   const data = await res.json();
   localStorage.setItem("EXTERNAL_ACCESS_TOKEN", data.data.access_token);
@@ -376,7 +445,7 @@ async function analyses(file) {
   const formData = new FormData();
   formData.append("file", file);
 
-  const res = await fetch(`${baseApiUrl}/analyses-multipart/async`, {
+  const res = await fetch(enviroiment[externalType]['postAnalysesApi'], {
     method: "POST",
     headers: {
       "Authorization": localStorage.getItem("EXTERNAL_ACCESS_TOKEN")
@@ -394,10 +463,9 @@ async function analyses(file) {
 }
 
 async function checkProcess(jobId) {
-  const res = await fetch(`${baseApiUrl}/analyses-async/${jobId}`, {
+  const res = await fetch(`${enviroiment[externalType]['getAnalysesApi']}/${jobId}`, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
       "Authorization": localStorage.getItem("EXTERNAL_ACCESS_TOKEN")
     },
   });
@@ -424,17 +492,14 @@ async function checkProcess(jobId) {
 // CALL API FUNCTION END
 
 // GOTO PAGE START
-function gotoAssignTaskPage(docId) {
-  window.location.href = assignTaskURL.replace("::docId::", docId);
-}
-
-function gotoTransferProcessingPage(docId) {
-  window.location.href = transferProcessingURL.replace("::docId::", docId);
+function gotoPage(docId) {
+  window.location.href = enviroiment[externalType]['internalUrl'].replace("::docId::", docId);
 }
 // GOTO PAGE END
 
 window.addEventListener("message", async (externalEvent) => {
   if (externalEvent.source !== window) return;
+
   if (externalEvent.data?.type === "RUN_OPEN_TAB") {
     localStorage.removeItem("ALL_DOC_IDS");
     localStorage.removeItem("EXTERNAL_ACCESS_TOKEN");
@@ -452,17 +517,16 @@ window.addEventListener("message", async (externalEvent) => {
     const ids = docId ? [docId] : await getAllDocIds();
 
     localStorage.setItem("ALL_DOC_IDS", JSON.stringify(ids));
-    // gotoAssignTaskPage(ids[0]);
-    gotoTransferProcessingPage(ids[0])
+    gotoPage(ids[0]);
   }
 
   if (externalEvent.data?.action === "AUTO_FILL") {
     const docId = externalEvent.data.docId;
-    const type = externalEvent.data.type;
+    externalType = externalEvent.data.type;
     const apiUrl = `qlvb.van_ban_den.getFileAttachLst("${docId}",0)`;
     const data = await getData(apiUrl);
 
-    if (type === "ASSIGN_TASK") {
+    if (externalType === "ASSIGN_TASK") {
       await fillPriority(data.priority)
       await fillDeadline(data.deadline)
       await fillDateToComplete(data.date_to_complete)
@@ -472,18 +536,21 @@ window.addEventListener("message", async (externalEvent) => {
       const currentIndex = ids.indexOf(docId);
       if (currentIndex >= 0 && currentIndex < ids.length - 1) {
         const nextDocId = ids[currentIndex + 1];
-        gotoAssignTaskPage(nextDocId);
+        gotoPage(nextDocId);
       }
     }
 
-    if (type === "TRANSFER_PROCESSING") {
+    if (externalType === "TRANSFER_PROCESSING") {
       const el = document.createElement('div');
       el.onclick = (e) => showDocDetail(docId, 'FALSE', '514357466', e);
       el.click();
-      await sleep(3000);
+      await sleep(1500);
       chuyenTiepVanBanV2(1);
-      await sleep(3000);
-      console.log(data);
+      await sleep(1500);
+      await fillTextArea('txtCommentChuyenTiep', data.processing_note);
+      await fillTextArea('txtThamMuu', data.advisory_opinion);
+      await fillAutoAssign(data.auto_assign);
+      await fillUserProcessing(data.assignments);
     }
   }
 });
