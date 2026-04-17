@@ -1,6 +1,6 @@
 let externalType = 'ASSIGN_TASK';
 const baseApiUrl = `https://qlvb-dev-api.pthub.vn/api`;
-const pageSize = 50;
+const pageSize = 1;
 const enviroiment = {
   ASSIGN_TASK: {
     internalUrl: `https://quanlyvanban.hanoi.gov.vn/qlvbdh/main?externalType=ASSIGN_TASK&IzL1Dx9w5BxmCEtw5A9c6Bnb=CEt1CzAwJyHx4yjbTq9vCBtuTt9fCcPbUo..&IyLlCc5f5w5fCES.=DBnZTb9jTBnw6Q9d6Btl3z5f5BKl6B1a53W.&CyHg5BLw=::docId::&Do..=1&CyHg5BLwObPt=undefined&CBAkTA9f5o..=m2526`,
@@ -372,19 +372,20 @@ async function activeLog(logAction) {
 }
 
 async function getAllDocIds() {
-  const paging = await getPaging();
-  if (!paging[0].nop) {
-    return [];
-  }
+  return await getDocIds(1);
+  // const paging = await getPaging();
+  // if (!paging[0].nop) {
+  //   return [];
+  // }
 
-  const ids = [];
+  // const ids = [];
 
-  for (let index = 1; index <= paging[0].nop; index++) {
-    const pageIds = await getDocIds(index);
-    ids.push(...pageIds);
-  }
+  // for (let index = 1; index <= paging[0].nop; index++) {
+  //   const pageIds = await getDocIds(index);
+  //   ids.push(...pageIds);
+  // }
 
-  return ids;
+  // return ids;
 }
 
 async function analyses(file) {
